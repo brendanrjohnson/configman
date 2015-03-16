@@ -1,13 +1,13 @@
 package main
 
 import (
-	"errors"
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/brendanrjohnson/configman/backends"
 	"github.com/kelseyhightower/confd/log"
 )
 
@@ -15,6 +15,7 @@ var (
 	configFile        = ""
 	defaultConfigFile = "etc/configman/configman.toml"
 	backend           string
+	backendsConfig    backends.Config
 	clientCaKeys      string
 	clientCert        string
 	clientKey         string
@@ -44,7 +45,7 @@ type Config struct {
 	Prefix       string   `toml:"prefix"`
 	Quiet        bool     `toml:"quiet"`
 	Scheme       string   `toml:"scheme"`
-	Verbose      string   `toml:"verbose"`
+	Verbose      bool     `toml:"verbose"`
 }
 
 func init() {
@@ -55,6 +56,7 @@ func init() {
 	flag.StringVar(&confdir, "confdir", "/etc/configman", "configman conf directory")
 	flag.StringVar(&configFile, "config-file", "", "the configman conf file")
 	flag.BoolVar(&debug, "debug", false, "enable debug logging")
+	flag.Uint64Var(&defaultTTL, "defaultTTL", 300, "default etcd TTL")
 	flag.Var(&nodes, "node", "list of backend nodes")
 	flag.BoolVar(&onetime, "onetime", false, "run once and exit")
 	flag.StringVar(&prefix, "prefix", "/configman", "key path prefix")
@@ -69,7 +71,7 @@ func init() {
 // settings from the flags set on the command line.
 // It returns and error if any.
 func initConfig() error {
-	if configfile == "" {
+	if configFile == "" {
 		if _, err := os.Stat(defaultConfigFile); !os.IsNotExist(err) {
 			configFile = defaultConfigFile
 		}
@@ -97,7 +99,37 @@ func initConfig() error {
 		}
 	}
 	// Update config from commandline flags.
+	processFlags()
 
+	// Configure Logging.
+	log.SetQuiet(config.Quiet)
+	log.SetVerbose(config.Verbose)
+	log.SetDebug(config.Debug)
+
+	if len(config.BackendNodes) == 0 {
+		switch config.Backend {
+		case "consul":
+			config.BackendNodes = []string{"127.0.0.1:8500"}
+		case "etcd":
+			peerstr := os.Getenv("ETCDCTL_PEERS")
+			if len(peerstr) > 0 {
+				config.BackendNodes = strings.Split(peerstr, ",")
+			} else {
+				config.BackendNodes = []string{"http://127.0.0.1:4001"}
+			}
+		}
+	}
+	// Initialize the storage client
+	log.Notice("Backend set to " + config.Backend)
+	backendsConfig = backends.Config{
+		Backend:      config.Backend,
+		ClientCaKeys: config.ClientCakeys,
+		ClientCert:   config.ClientCert,
+		ClientKey:    config.ClientKey,
+		BackendNodes: config.BackendNodes,
+		Scheme:       config.Scheme,
+	}
+	return nil
 }
 
 // processFlags iterates through each flag set on the command line and overrides corresponding configuration settings.
@@ -106,5 +138,30 @@ func processFlags() {
 }
 
 func setConfigFromFlag(f *flag.Flag) {
-
+	switch f.Name {
+	case "backend":
+		config.Backend = backend
+	case "client-cakeys":
+		config.ClientCakeys = clientCaKeys
+	case "client-cert":
+		config.ClientCert = clientCert
+	case "client-key":
+		config.ClientKey = clientKey
+	case "confdir":
+		config.ConfDir = confdir
+	case "debug":
+		config.Debug = debug
+	case "defaultTTL":
+		config.DefaultTTL = defaultTTL
+	case "node":
+		config.BackendNodes = nodes
+	case "prefix":
+		config.Prefix = prefix
+	case "quiet":
+		config.Quiet = quiet
+	case "scheme":
+		config.Scheme = scheme
+	case "verbose":
+		config.Verbose = verbose
+	}
 }

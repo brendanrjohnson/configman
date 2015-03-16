@@ -11,8 +11,8 @@ func (n *Nodes) String() string {
 	return fmt.Sprintf("%s", *n)
 }
 
-// AppendNode appends the node to the node list
-func (n *Nodes) AppendNode(node string) error {
+// set appends the node to the node list
+func (n *Nodes) Set(node string) error {
 	*n = append(*n, node)
 	return nil
 }
