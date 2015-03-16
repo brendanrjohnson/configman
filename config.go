@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -132,7 +133,11 @@ func initConfig() error {
 	}
 
 	// appconf configuration
-	appconfsConfig = appconf.Config
+	appconfsConfig = appconf.Config{
+		ConfDir:   config.ConfDir,
+		ConfigDir: filepath.Join(config.ConfDir, "conf.d"),
+		Prefix:    config.Prefix,
+	}
 	return nil
 }
 

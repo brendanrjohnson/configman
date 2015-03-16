@@ -9,11 +9,10 @@ import (
 )
 
 type Config struct {
-	ConfDir      string
-	ConfigDir    string
-	Prefix       string
-	StoreClient  backends.StoreClient
-	BaseConfsDir string
+	ConfDir     string
+	ConfigDir   string
+	Prefix      string
+	StoreClient backends.StoreClient
 }
 
 type AppConfDefaultObject struct {

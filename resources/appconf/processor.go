@@ -9,7 +9,7 @@ import (
 	"github.com/kelseyhightower/confd/log"
 )
 
-func getBaseConfs(config Config) ([]*AppConfDefault, error) {
+func getAppConfs(config Config) ([]*AppConfDefault, error) {
 	var lastError error
 	appconfs := make([]*AppConfDefault, 0)
 	log.Debug("Loading template resources from confdir " + config.ConfDir)
