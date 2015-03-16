@@ -51,6 +51,22 @@ func (c *Client) GetValues(keys []string) (map[string]string, error) {
 	return vars, nil
 }
 
+func (c *Client) CreateDir(key string, ttl uint64) error {
+	_, err := c.client.CreateDir(key, ttl)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) Set(key string, value string, ttl uint64) error {
+	_, err := c.client.Set(key, value, ttl)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // nodeWalk recursively descends nodes, updating vars.
 func nodeWalk(node *goetcd.Node, vars map[string]string) error {
 	if node != nil {

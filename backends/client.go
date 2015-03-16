@@ -11,6 +11,8 @@ import (
 // The StoreClient interface is implemented by objects that can retrieve key/value pairs from a backend store.
 type StoreClient interface {
 	GetValues(keys []string) (map[string]string, error)
+	CreateDir(key string, ttl uint64) error
+	Set(key string, value string, ttl uint64) error
 }
 
 // New is used to create a storage client based on our configuration.

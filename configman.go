@@ -1,13 +1,13 @@
 package main
 
 import (
-	//	"encoding/json"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 
 	"github.com/brendanrjohnson/configman/backends"
-	"github.com/brendanrjohnson/configman/resources/baseconfs"
+	"github.com/brendanrjohnson/configman/resources/appconf"
 	"github.com/kelseyhightower/confd/log"
 )
 
@@ -25,5 +25,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Println(storeClient)
+
+	storeClient.CreateDir(config.Prefix, config.DefaultTTL)
+	configuration, err := appconf.NewAppConfDefault("etc/configman/conf.d/mariadb.toml")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	storeClient.CreateDir((config.Prefix + "/" + configuration.Prefix), defaultTTL)
+
+	jsonConfiguration, err := json.Marshal(configuration)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	storeClient.Set((config.Prefix + "/" + configuration.Prefix + "/" + configuration.Conffile), string(jsonConfiguration), defaultTTL)
 }

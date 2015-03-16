@@ -1,11 +1,20 @@
-package baseconfs
+package appconf
 
 import (
 	"fmt"
 
 	"github.com/BurntSushi/toml"
+	"github.com/brendanrjohnson/configman/backends"
 	"github.com/kelseyhightower/confd/log"
 )
+
+type Config struct {
+	ConfDir      string
+	ConfigDir    string
+	Prefix       string
+	StoreClient  backends.StoreClient
+	BaseConfsDir string
+}
 
 type AppConfDefaultObject struct {
 	AppConfDefault AppConfDefault `toml:"appconfdefault"`

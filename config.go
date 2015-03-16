@@ -8,6 +8,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/brendanrjohnson/configman/backends"
+	"github.com/brendanrjohnson/configman/resources/appconf"
 	"github.com/kelseyhightower/confd/log"
 )
 
@@ -16,6 +17,7 @@ var (
 	defaultConfigFile = "etc/configman/configman.toml"
 	backend           string
 	backendsConfig    backends.Config
+	appconfsConfig    appconf.Config
 	clientCaKeys      string
 	clientCert        string
 	clientKey         string
@@ -128,6 +130,9 @@ func initConfig() error {
 		BackendNodes: config.BackendNodes,
 		Scheme:       config.Scheme,
 	}
+
+	// appconf configuration
+	appconfsConfig = appconf.Config
 	return nil
 }
 
