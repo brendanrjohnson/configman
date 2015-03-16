@@ -100,7 +100,6 @@ func initConfig() error {
 	}
 	// Update config from commandline flags.
 	processFlags()
-
 	// Configure Logging.
 	log.SetQuiet(config.Quiet)
 	log.SetVerbose(config.Verbose)

@@ -2,23 +2,28 @@ package main
 
 import (
 	//	"encoding/json"
+	"flag"
 	"fmt"
+	"os"
 
-	//	"github.com/brendanrjohnson/configman/backends"
+	"github.com/brendanrjohnson/configman/backends"
+	"github.com/brendanrjohnson/configman/resources/baseconfs"
 	"github.com/kelseyhightower/confd/log"
 )
 
 func main() {
-
-	configuration, err := NewAppConfDefault("etc/configman/conf.d/mariadb.toml")
+	flag.Parse()
+	if printVersion {
+		fmt.Printf("configman %s\n", Version)
+		os.Exit(0)
+	}
+	if err := initConfig(); err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Notice("Starting configman")
+	storeClient, err := backends.New(backendsConfig)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Println(configuration)
-
-	//machines := []string{"http://192.168.39.21:4001", "http://192.168.39.22:4001", "http://192.168.39.23:4001"}
-	//cert := ""
-	//key := ""
-	//caCert := ""
-
+	fmt.Println(storeClient)
 }
