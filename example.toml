@@ -1,0 +1,26 @@
+[appconfdefault]
+  conffile = "example.conf"
+  prefix = "/exampleapp"
+  name = "example"
+
+  [[appconfdefault.subsection]]
+    identifier = "section1"
+
+    [[appconfdefault.subsection.pair]]
+      key = "bind"
+      value = "0.0.0.0"
+
+    [[appconfdefault.subsection.pair]]
+      key = "memory"
+      value = "16"
+
+  [[appconfdefault.subsection]]
+    identifier = "section2"
+
+    [[appconfdefault.subsection.pair]]
+      key = "nice"
+      value = "0"
+
+    [[appconfdefault.subsection.pair]]
+      key = "path"
+      value = "/etc/example"

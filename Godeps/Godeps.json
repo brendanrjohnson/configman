@@ -1,0 +1,21 @@
+{
+	"ImportPath": "github.com/brendanrjohnson/configman",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.1.0-18-g443a628",
+			"Rev": "443a628bc233f634a75bcbdd71fe5350789f1afa"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-etcd/etcd",
+			"Comment": "v0.4.6",
+			"Rev": "6aa2da5a7a905609c93036b9307185a04a5a84a5"
+		},
+		{
+			"ImportPath": "github.com/kelseyhightower/confd/log",
+			"Comment": "v0.8.0-2-gf84b57d",
+			"Rev": "f84b57dae136775eb08f2f3503d9e80ec5234a92"
+		}
+	]
+}
